@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Cookie from "js-cookie";
+import { useCookie } from "../contexts/useCookieContext";
 
 const DisplayName = () => {
-  const [displayName, setDisplayName] = useState(null);
-
-  useEffect(() => {
-    const name = Cookie.get("displayName");
-    setDisplayName(name);
-  }, []);
+  const { cookies, clearCookieAndRefresh } = useCookie();
 
   return (
-    <div>
-      {displayName ? (
-        <p>Welcome, {displayName}!</p>
-      ) : (
-        <p>Please log in to see your display name.</p>
-      )}
-    </div>
+    <div>{cookies.displayName ? <p>{cookies.displayName}</p> : <p></p>}</div>
   );
 };
 

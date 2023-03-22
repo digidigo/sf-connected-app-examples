@@ -5,26 +5,45 @@ import {
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import DisplayName from "./DisplayName";
-import Cookie from "js-cookie";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useCookie } from "../contexts/useCookieContext";
+import { useLoading } from "../contexts/useLoadingContext";
 
 export default function Header() {
   const router = useRouter();
   const [userId, setUserId] = useState(null);
-  useEffect(() => {
-    const userId = Cookie.get("userId");
-    setUserId(userId);
-  }, []);
+  const { cookies, clearCookieAndRefresh } = useCookie();
+  const { setIsLoading } = useLoading();
 
   const navigateTo = (path) => {
     router.push(path);
   };
 
+  const testMongoConnection = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/test-mongo");
+      const data = await response.json();
+      toast.success("Database is connected!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } catch (error) {
+      toast.error(`DB Erro: ${error.message}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const refreshToken = async () => {
     try {
-      const response = await axios.get(`/api/refresh-token?userId=${userId}`);
+      setIsLoading(true);
+      const response = await axios.get(
+        `/api/refresh-token?userId=${cookies.userId}`
+      );
       const { accessToken } = response.data;
       console.log("Access token refreshed:", accessToken);
       toast.success("Access token refreshed successfully", {
@@ -35,6 +54,8 @@ export default function Header() {
       toast.error(`Error refreshing access token: ${error.message}`, {
         position: toast.POSITION.TOP_RIGHT,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,7 +68,7 @@ export default function Header() {
         <HomeIcon className="h-6 w-6 text-blue-500 mr-2" />
       </button>
       <button
-        onClick={() => navigateTo("/test-mongo")}
+        onClick={() => testMongoConnection()}
         className="flex items-center focus:outline-none"
       >
         <CircleStackIcon className="h-6 w-6 text-blue-500 mr-2" />
