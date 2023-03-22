@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
     const result = await jsforceUtils.updateContact(updates);
 
-    res.status(200).json(result);
+    res.status(200).json(updates);
   } catch (error) {
     console.error("Error updating contact:", error);
     res.status(error.statusCode || 500).json({ message: error.message });

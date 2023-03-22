@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Cookie from "js-cookie";
-import Header from "../components/Header";
 import ContactCard from "../components/ContactCard";
+import { useLoading } from "@/contexts/useLoadingContext";
+import { toast } from "react-toastify";
 
 const SalesforceInfo = () => {
   const [contacts, setContacts] = useState(null);
   const [error, setError] = useState(null);
+
+  const { setIsLoading } = useLoading();
 
   useEffect(() => {
     const userId = Cookie.get("userId");
@@ -36,6 +39,8 @@ const SalesforceInfo = () => {
 
   const handleContactUpdate = async (id, updates) => {
     try {
+      setIsLoading(true);
+
       const response = await fetch(`/api/update-contact?id=${id}`, {
         method: "PUT",
         headers: {
@@ -58,17 +63,24 @@ const SalesforceInfo = () => {
           }
         })
       );
+      toast.success("Contact Updated", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return updatedContact;
     } catch (error) {
       console.error(error);
       setError(error.message);
+      toast.error(`Error updating contact: ${error.message}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return null;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div>
-      <Header />
       {error ? (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"

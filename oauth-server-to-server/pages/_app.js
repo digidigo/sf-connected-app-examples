@@ -6,7 +6,9 @@ import { LoadingProvider } from "../contexts/useLoadingContext";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import LoadingSpinner from "../components/LoadingSpinner";
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState(null);
 
@@ -26,7 +28,14 @@ function MyApp({ Component, pageProps }) {
       <div className="flex flex-col h-screen w-screen">
         <LoadingProvider>
           <CookieProvider>
-            <Component {...pageProps} />
+            <Header />
+            <div className="flex-grow bg-gray-100 flex items-center justify-center">
+              <div className="flex-grow bg-gray-100 flex items-center justify-center">
+                <Component {...pageProps} />
+              </div>
+            </div>
+            <Footer />
+            <LoadingSpinner />
             <ToastContainer />
           </CookieProvider>
         </LoadingProvider>
