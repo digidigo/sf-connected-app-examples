@@ -34,6 +34,38 @@ const SalesforceInfo = () => {
     fetchData();
   }, []);
 
+  const handleContactUpdate = async (id, updates) => {
+    try {
+      const response = await fetch(`/api/update-contact?id=${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to update contact: ${response.statusText}`);
+      }
+      const updatedContact = await response.json();
+      console.log("updatedContact:", updatedContact);
+      // Update the contacts state with the updated contact
+      setContacts((prevContacts) =>
+        prevContacts.map((contact) => {
+          if (contact.Id === updatedContact.Id) {
+            return updatedContact;
+          } else {
+            return contact;
+          }
+        })
+      );
+      return updatedContact;
+    } catch (error) {
+      console.error(error);
+      setError(error.message);
+      return null;
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -51,8 +83,10 @@ const SalesforceInfo = () => {
             contacts.map((contact) => (
               <ContactCard
                 key={contact.Id}
+                id={contact.Id}
                 firstName={contact.FirstName}
                 lastName={contact.LastName}
+                onUpdateContact={handleContactUpdate}
               />
             ))
           ) : (

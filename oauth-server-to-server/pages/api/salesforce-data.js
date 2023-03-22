@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   // Fetch contact data from Salesforce API
   try {
     const response = await axios.get(
-      `${url}/v57.0/query?q=SELECT+FirstName,LastName+FROM+Contact`,
+      `${url}/v57.0/query?q=SELECT+Id,FirstName,LastName+FROM+Contact`,
       {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
