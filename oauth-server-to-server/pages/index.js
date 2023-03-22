@@ -12,6 +12,10 @@ export default function Home({ user }) {
     router.push("/api/auth?action=logout");
   };
 
+  const handleGetSalesforceInfo = () => {
+    router.push("/salesforce-info");
+  };
+
   return (
     <>
       <Header />
@@ -42,6 +46,15 @@ export default function Home({ user }) {
             </button>
           </div>
         )}
+        <div className="bg-white p-10 rounded shadow-md">
+          <h1 className="text-xl font-bold mb-4">Welcome, guest</h1>
+          <button
+            onClick={handleGetSalesforceInfo}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Get Data
+          </button>
+        </div>
       </div>
     </>
   );

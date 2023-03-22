@@ -3,7 +3,7 @@ const SalesforceStrategy = require("passport-salesforce").Strategy;
 
 const SALESFORCE_CONSUMER_KEY = process.env.SALESFORCE_CLIENT_ID;
 const SALESFORCE_CONSUMER_SECRET = process.env.SALESFORCE_CLIENT_SECRET;
-const CALLBACK_URL = "http://localhost:3000/api/callback";
+const CALLBACK_URL = process.env.SALESFORCE_CALLBACK_URL;
 
 passport.use(
   new SalesforceStrategy(
